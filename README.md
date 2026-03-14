@@ -213,19 +213,6 @@ curl -X DELETE http://127.0.0.1:8013/v1/references/delete \
   -d '{"reference_id": "my-voice"}'
 ```
 
-### Concurrency Performance
-
-Benchmarked on Apple M3 Max with Fish Audio S2 Pro BF16 (~50-char text with voice cloning):
-
-| workers | 4 concurrent | 16 concurrent | 32 concurrent | avg latency (32) |
-|---------|-------------|--------------|--------------|-----------------|
-| 1       | 5.0s        | 23.8s        | 63.3s        | 33.7s           |
-| 4       | 4.0s        | 15.2s        | 29.0s        | 14.8s           |
-| 8       | 4.2s        | **12.1s** ✅  | **27.2s** ✅  | **13.6s** ✅     |
-| 16      | 4.0s        | 13.5s        | 25.5s        | 14.4s           |
-
-Recommended: `--num-workers 4` for S2 Pro BF16 (memory-constrained), `--num-workers 8` for lighter models.
-
 ### Supported Models
 
 | Model | HuggingFace | Size | Notes |
@@ -508,19 +495,6 @@ curl -X DELETE http://127.0.0.1:8013/v1/references/delete \
   -H "Content-Type: application/json" \
   -d '{"reference_id": "my-voice"}'
 ```
-
-### 并发性能
-
-以下为 Apple M3 Max 上 Fish Audio S2 Pro BF16 的实测数据（约 50 字文本，含声音克隆）：
-
-| workers | 4 并发总耗时 | 16 并发总耗时 | 32 并发总耗时 | 32 并发平均延迟 |
-|---------|------------|-------------|-------------|--------------|
-| 1       | 5.0s       | 23.8s       | 63.3s       | 33.7s        |
-| 4       | 4.0s       | 15.2s       | 29.0s       | 14.8s        |
-| 8       | 4.2s       | **12.1s** ✅ | **27.2s** ✅ | **13.6s** ✅  |
-| 16      | 4.0s       | 13.5s       | 25.5s       | 14.4s        |
-
-推荐：S2 Pro BF16 使用 `--num-workers 4`（内存受限），轻量模型可用 `--num-workers 8`。
 
 ### 可用模型
 
