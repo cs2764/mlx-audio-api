@@ -32,27 +32,29 @@ source .venv/bin/activate
 **2. Download a model**
 
 ```bash
-# Fish Audio S2 Pro BF16 (recommended, high quality, ~9.6 GB)
+# Fish Audio S2 Pro BF16 (high quality, 80+ languages, ~9.6 GB)
+# https://huggingface.co/mlx-community/fish-audio-s2-pro-bf16
 uv run python -c "
 from huggingface_hub import snapshot_download
 snapshot_download('mlx-community/fish-audio-s2-pro-bf16', local_dir='./models/fish-audio-s2-pro-bf16')
 "
 
-# Ming-omni-tts-0.5B (lightweight, ~2.8 GB, already in MLX format)
+# Qwen3-TTS-12Hz-1.7B-VoiceDesign BF16 (lightweight, voice style control, ~4.5 GB)
+# https://huggingface.co/mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-bf16
 uv run python -c "
 from huggingface_hub import snapshot_download
-snapshot_download('inclusionAI/Ming-omni-tts-0.5B', local_dir='./models/Ming-omni-tts-0.5B-mlx')
+snapshot_download('mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-bf16', local_dir='./models/Qwen3-TTS-12Hz-1.7B-VoiceDesign-bf16')
 "
 ```
 
 **3. Start the server**
 
 ```bash
-# Single worker (default)
-uv run python -m src --model-path ./models/fish-audio-s2-pro-bf16
-
-# Multi-worker (recommended for production)
+# Fish Audio S2 Pro BF16
 uv run python -m src --model-path ./models/fish-audio-s2-pro-bf16 --num-workers 4
+
+# Qwen3 VoiceDesign (lighter, more workers possible)
+uv run python -m src --model-path ./models/Qwen3-TTS-12Hz-1.7B-VoiceDesign-bf16 --num-workers 8
 ```
 
 Server listens on `http://0.0.0.0:8013` by default. Verify with:
@@ -109,16 +111,36 @@ resp = requests.post('http://127.0.0.1:8013/v1/tts', json={
 open('cloned.wav', 'wb').write(resp.content)
 ```
 
-**VoiceDesign (Qwen3 models)**
+**VoiceDesign (Qwen3-TTS-12Hz-1.7B-VoiceDesign)**
 
-Use the `instruct` field to describe the desired voice style:
+Use the `instruct` field to describe the desired voice style in English. No reference audio needed.
 
 ```bash
+# Start with Qwen3 VoiceDesign model
+uv run python -m src --model-path ./models/Qwen3-TTS-12Hz-1.7B-VoiceDesign-bf16 --num-workers 8
+
+# Basic request with voice style
 curl -X POST http://127.0.0.1:8013/v1/tts \
   -H "Content-Type: application/json" \
-  -d '{"text": "Hello!", "instruct": "A cheerful young female voice with high pitch"}' \
+  -d '{"text": "Hello, how can I help you today?", "instruct": "A cheerful young female voice with high pitch"}' \
   --output output.wav
 ```
+
+```python
+import requests
+
+resp = requests.post('http://127.0.0.1:8013/v1/tts', json={
+    'text': 'Welcome to our service. How may I assist you?',
+    'instruct': 'A calm professional male voice, clear and steady',
+})
+open('output.wav', 'wb').write(resp.content)
+```
+
+Some example `instruct` values:
+- `"A cheerful young female voice with high pitch"`
+- `"A calm middle-aged male voice with deep tone"`
+- `"An energetic young male voice, fast pace"`
+- `"A gentle elderly female voice, slow and clear"`
 
 **Streaming output**
 
@@ -204,10 +226,10 @@ Recommended: `--num-workers 4` for S2 Pro BF16 (memory-constrained), `--num-work
 
 ### Supported Models
 
-| Model | Size | Notes |
-|---|---|---|
-| `fish-audio-s2-pro-bf16` | 9.6 GB | High quality, 80+ languages |
-| `Ming-omni-tts-0.5B-mlx` | 2.8 GB | Lightweight, fast, MLX-native |
+| Model | HuggingFace | Size | Notes |
+|---|---|---|---|
+| `fish-audio-s2-pro-bf16` | [mlx-community/fish-audio-s2-pro-bf16](https://huggingface.co/mlx-community/fish-audio-s2-pro-bf16) | 9.6 GB | High quality, 80+ languages, voice cloning |
+| `Qwen3-TTS-12Hz-1.7B-VoiceDesign-bf16` | [mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-bf16](https://huggingface.co/mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-bf16) | 4.5 GB | Lightweight, voice style via `instruct` field |
 
 **Quantize S2 Pro to 8-bit:**
 
@@ -301,27 +323,29 @@ source .venv/bin/activate
 **2. 下载模型**
 
 ```bash
-# Fish Audio S2 Pro BF16（推荐，高质量，约 9.6GB）
+# Fish Audio S2 Pro BF16（高质量，80+ 语言，约 9.6GB）
+# https://huggingface.co/mlx-community/fish-audio-s2-pro-bf16
 uv run python -c "
 from huggingface_hub import snapshot_download
 snapshot_download('mlx-community/fish-audio-s2-pro-bf16', local_dir='./models/fish-audio-s2-pro-bf16')
 "
 
-# Ming-omni-tts-0.5B（轻量，约 2.8GB，已是 MLX 格式）
+# Qwen3-TTS-12Hz-1.7B-VoiceDesign BF16（轻量，支持声音风格控制，约 4.5GB）
+# https://huggingface.co/mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-bf16
 uv run python -c "
 from huggingface_hub import snapshot_download
-snapshot_download('inclusionAI/Ming-omni-tts-0.5B', local_dir='./models/Ming-omni-tts-0.5B-mlx')
+snapshot_download('mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-bf16', local_dir='./models/Qwen3-TTS-12Hz-1.7B-VoiceDesign-bf16')
 "
 ```
 
 **3. 启动服务**
 
 ```bash
-# 单 worker（默认）
-uv run python -m src --model-path ./models/fish-audio-s2-pro-bf16
-
-# 多 worker（推荐生产环境）
+# Fish Audio S2 Pro BF16
 uv run python -m src --model-path ./models/fish-audio-s2-pro-bf16 --num-workers 4
+
+# Qwen3 VoiceDesign（更轻量，可开更多 worker）
+uv run python -m src --model-path ./models/Qwen3-TTS-12Hz-1.7B-VoiceDesign-bf16 --num-workers 8
 ```
 
 服务默认监听 `http://0.0.0.0:8013`，启动后验证：
@@ -378,16 +402,36 @@ resp = requests.post('http://127.0.0.1:8013/v1/tts', json={
 open('cloned.wav', 'wb').write(resp.content)
 ```
 
-**VoiceDesign 声音风格（Qwen3 等模型）**
+**VoiceDesign 声音风格（Qwen3-TTS-12Hz-1.7B-VoiceDesign）**
 
-通过 `instruct` 字段描述声音风格：
+通过 `instruct` 字段用英文描述声音风格，无需参考音频：
 
 ```bash
+# 使用 Qwen3 VoiceDesign 模型启动
+uv run python -m src --model-path ./models/Qwen3-TTS-12Hz-1.7B-VoiceDesign-bf16 --num-workers 8
+
+# 指定声音风格
 curl -X POST http://127.0.0.1:8013/v1/tts \
   -H "Content-Type: application/json" \
-  -d '{"text": "你好！", "instruct": "A cheerful young female voice with high pitch"}' \
+  -d '{"text": "你好，有什么可以帮助你的？", "instruct": "A cheerful young female voice with high pitch"}' \
   --output output.wav
 ```
+
+```python
+import requests
+
+resp = requests.post('http://127.0.0.1:8013/v1/tts', json={
+    'text': '欢迎使用语音合成服务，请问有什么需要帮助的？',
+    'instruct': 'A calm professional male voice, clear and steady',
+})
+open('output.wav', 'wb').write(resp.content)
+```
+
+`instruct` 示例：
+- `"A cheerful young female voice with high pitch"`（活泼年轻女声）
+- `"A calm middle-aged male voice with deep tone"`（沉稳中年男声）
+- `"An energetic young male voice, fast pace"`（充满活力的年轻男声）
+- `"A gentle elderly female voice, slow and clear"`（温柔清晰的老年女声）
 
 **流式输出**
 
@@ -473,10 +517,10 @@ curl -X DELETE http://127.0.0.1:8013/v1/references/delete \
 
 ### 可用模型
 
-| 模型 | 大小 | 特点 |
-|---|---|---|
-| `fish-audio-s2-pro-bf16` | 9.6GB | 高质量，支持 80+ 语言 |
-| `Ming-omni-tts-0.5B-mlx` | 2.8GB | 轻量快速，MLX 原生格式 |
+| 模型 | HuggingFace | 大小 | 特点 |
+|---|---|---|---|
+| `fish-audio-s2-pro-bf16` | [mlx-community/fish-audio-s2-pro-bf16](https://huggingface.co/mlx-community/fish-audio-s2-pro-bf16) | 9.6GB | 高质量，支持 80+ 语言，支持声音克隆 |
+| `Qwen3-TTS-12Hz-1.7B-VoiceDesign-bf16` | [mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-bf16](https://huggingface.co/mlx-community/Qwen3-TTS-12Hz-1.7B-VoiceDesign-bf16) | 4.5GB | 轻量快速，通过 `instruct` 控制声音风格 |
 
 **量化 S2 Pro 为 8bit：**
 
