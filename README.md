@@ -113,6 +113,8 @@ open('cloned.wav', 'wb').write(resp.content)
 
 **VoiceDesign (Qwen3-TTS-12Hz-1.7B-VoiceDesign)**
 
+> **Note**: The `instruct` field is **required** when using `Qwen3-TTS-12Hz-1.7B-VoiceDesign-bf16`. Omitting it will result in a default/random voice style being applied.
+
 Use the `instruct` field to describe the desired voice style in English. No reference audio needed.
 
 ```bash
@@ -260,6 +262,9 @@ uv run python tests/test_concurrent_api.py --no-ref
 # Skip sequential baseline, go straight to concurrent
 uv run python tests/test_concurrent_api.py --skip-sequential
 
+# Qwen3 VoiceDesign mode (no reference audio needed)
+uv run python tests/test_concurrent_api.py --instruct "A cheerful young female voice with high pitch" --no-ref
+
 # Custom API URL, auth key, output dir
 uv run python tests/test_concurrent_api.py --url http://127.0.0.1:8013/v1/tts --api-key <KEY> --output-dir ./my_outputs
 ```
@@ -403,6 +408,8 @@ open('cloned.wav', 'wb').write(resp.content)
 ```
 
 **VoiceDesign 声音风格（Qwen3-TTS-12Hz-1.7B-VoiceDesign）**
+
+> **注意**：使用 `Qwen3-TTS-12Hz-1.7B-VoiceDesign-bf16` 时，`instruct` 字段为**必填项**。不填将使用默认/随机声音风格。
 
 通过 `instruct` 字段用英文描述声音风格，无需参考音频：
 
@@ -550,6 +557,9 @@ uv run python tests/test_concurrent_api.py --no-ref
 
 # 跳过顺序测试，直接跑并发
 uv run python tests/test_concurrent_api.py --skip-sequential
+
+# Qwen3 VoiceDesign 模式（无需参考音频）
+uv run python tests/test_concurrent_api.py --instruct "A cheerful young female voice with high pitch" --no-ref
 
 # 自定义 API 地址、认证、输出目录
 uv run python tests/test_concurrent_api.py --url http://127.0.0.1:8013/v1/tts --api-key <KEY> --output-dir ./my_outputs
