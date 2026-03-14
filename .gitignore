@@ -1,0 +1,52 @@
+# ── Models (large binary files, download separately) ──────────────────────────
+models/
+
+# ── Virtual environment ────────────────────────────────────────────────────────
+.venv/
+
+# ── Runtime / user-generated ──────────────────────────────────────────────────
+references/
+test_outputs*/
+output*.wav
+output*.mp3
+output*.pcm
+*.wav
+*.mp3
+*.pcm
+
+# ── Keep sample voices (voice cloning examples) ───────────────────────────────
+!samples/*.wav
+!samples/*.txt
+
+# ── Python cache ───────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.hypothesis/
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ── macOS system files ─────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+
+# ── IDE / editor ──────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── Environment / secrets ─────────────────────────────────────────────────────
+.env
+.env.*
+*.key
+*.pem
+
+# ── Kiro IDE ──────────────────────────────────────────────────────────────────
+.kiro/
