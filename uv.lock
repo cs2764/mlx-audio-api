@@ -927,8 +927,8 @@ wheels = [
 
 [[package]]
 name = "mlx-audio"
-version = "0.4.0"
-source = { git = "https://github.com/Blaizzy/mlx-audio.git#dc731fca0a8674c1ce0b6a264eced5c655bb55f0" }
+version = "0.4.1"
+source = { git = "https://github.com/Blaizzy/mlx-audio.git#8083120b62fac0cb84dba5c7803e57026e2ebd97" }
 dependencies = [
     { name = "huggingface-hub" },
     { name = "librosa" },

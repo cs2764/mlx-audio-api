@@ -13,7 +13,7 @@ class TTSRequest(BaseModel):
     format: str = Field(default="wav", pattern="^(wav|mp3|pcm)$")
     references: list[ReferenceAudio] = Field(default_factory=list)
     reference_id: Optional[str] = None
-    seed: Optional[int] = None
+    seed: Optional[int] = Field(default=42)
     use_memory_cache: str = Field(default="off", pattern="^(on|off)$")
     normalize: bool = True
     streaming: bool = False

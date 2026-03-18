@@ -12,6 +12,9 @@ class ServerConfig:
     max_queue_size: int = 32
     timeout: float = 300.0
     num_workers: int = 1
+    # Dynamic batching (Qwen3 only) — disabled by default; enable with --batch-window-ms
+    batch_window_ms: int = 0    # 0 = disabled; set >0 to enable (e.g. 50ms)
+    max_batch_size: int = 8     # max requests per batch
 
 
 def parse_config(args=None) -> ServerConfig:
@@ -28,6 +31,12 @@ def parse_config(args=None) -> ServerConfig:
     parser.add_argument("--timeout", type=float, default=float(os.environ.get("TTS_TIMEOUT", "300.0")))
     parser.add_argument("--num-workers", type=int, default=1,
                         help="Number of parallel inference workers (each loads its own model instance)")
+    parser.add_argument("--batch-window-ms", type=int,
+                        default=int(os.environ.get("TTS_BATCH_WINDOW_MS", "0")),
+                        help="Dynamic batching: max wait window in ms to collect a batch (Qwen3 only, 0=disabled)")
+    parser.add_argument("--max-batch-size", type=int,
+                        default=int(os.environ.get("TTS_MAX_BATCH_SIZE", "8")),
+                        help="Dynamic batching: max requests per batch (Qwen3 only, default: 8)")
 
     parsed = parser.parse_args(args)
 
@@ -42,4 +51,6 @@ def parse_config(args=None) -> ServerConfig:
         max_queue_size=parsed.max_queue_size,
         timeout=parsed.timeout,
         num_workers=parsed.num_workers,
+        batch_window_ms=parsed.batch_window_ms,
+        max_batch_size=parsed.max_batch_size,
     )

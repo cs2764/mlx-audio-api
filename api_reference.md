@@ -90,7 +90,7 @@ Authorization: Bearer <YOUR_API_KEY>
   "reference_id": null,
   "instruct": null,
   "streaming": false,
-  "seed": null,
+  "seed": 42,
   "normalize": true,
   "chunk_length": 200,
   "max_new_tokens": 1024,
@@ -114,7 +114,7 @@ Authorization: Bearer <YOUR_API_KEY>
 | `reference_id` | `string\|null` | ❌ | `null` | 服务端预加载的参考音色 ID |
 | `instruct` | `string\|null` | ❌ | `null` | VoiceDesign 声音描述（Qwen3 等模型专用，见[VoiceDesign 模式](#voicedesign-模式)） |
 | `streaming` | `bool` | ❌ | `false` | 是否启用流式返回（仅支持 `wav` 格式） |
-| `seed` | `int\|null` | ❌ | `null` | 随机种子，固定值可复现结果 |
+| `seed` | `int\|null` | ❌ | `42` | 随机种子，固定值可复现结果 |
 | `normalize` | `bool` | ❌ | `true` | 是否对文本进行标准化（数字、英文等） |
 | `chunk_length` | `int` | ❌ | `200` | 文本分块长度（100-300） |
 | `max_new_tokens` | `int` | ❌ | `1024` | 最大生成 token 数，0 为不限制 |

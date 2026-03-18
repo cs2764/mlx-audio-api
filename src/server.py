@@ -25,7 +25,7 @@ from .models import (
 )
 from .reference_manager import ConflictError, NotFoundError, ReferenceManager
 from .request_queue import QueueFullError, RequestQueue
-from .tts_engine import TTSEngine
+from .tts_engine import TTSEngine, _BatchParams
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +76,13 @@ def create_app(config: ServerConfig) -> FastAPI:
         _engines = [TTSEngine(config.model_path) for _ in range(num_workers)]
 
         # Create queue with engine pool and reference manager
-        _queue = RequestQueue(engines=_engines, max_size=config.max_queue_size, timeout=config.timeout)
+        _queue = RequestQueue(
+            engines=_engines,
+            max_size=config.max_queue_size,
+            timeout=config.timeout,
+            batch_window_ms=config.batch_window_ms,
+            max_batch_size=config.max_batch_size,
+        )
         _ref_manager = ReferenceManager()
 
         # Start background workers
@@ -243,6 +249,20 @@ def create_app(config: ServerConfig) -> FastAPI:
                     sigma=req.sigma,
                     instruct=req.instruct,
                 )
+
+            # Attach batch params so the batching worker can extract them
+            _run_inference._batch_params = _BatchParams(
+                text=req.text,
+                format=req.format,
+                instruct=req.instruct,
+                temperature=req.temperature,
+                top_p=req.top_p,
+                top_k=req.top_k,
+                repetition_penalty=req.repetition_penalty,
+                max_new_tokens=req.max_new_tokens,
+                streaming=False,
+                seed=req.seed,
+            )
 
             try:
                 audio_bytes: bytes = await _queue.enqueue(_run_inference)
